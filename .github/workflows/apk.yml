@@ -25,7 +25,11 @@ jobs:
 
       - name: Copiar o jogo para dentro do app
         run: |
-          SRC=$(dirname "$(find . -name manifest.webmanifest -not -path './android/*' | head -1)")
+          mkdir -p /tmp/jogo
+          for z in *.zip; do [ -f "$z" ] && unzip -o -q "$z" -d "/tmp/jogo/${z%.zip}"; done
+          F=$(find . /tmp/jogo -name manifest.webmanifest -not -path './android/*' 2>/dev/null | head -1)
+          if [ -z "$F" ]; then echo "Nao achei os arquivos do jogo. Envie o ReinosDeEldmor-Web.zip para o repositorio."; exit 1; fi
+          SRC=$(dirname "$F")
           echo "Jogo encontrado em: $SRC"
           mkdir -p android/app/src/main/assets/game
           cp -r "$SRC"/. android/app/src/main/assets/game/
