@@ -1,6 +1,9 @@
 package com.wendrew.eldmor;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.webkit.WebResourceRequest;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,13 +40,31 @@ public class MainActivity extends Activity {
         s.setLoadWithOverviewMode(true);
         s.setUseWideViewPort(true);
         s.setSupportZoom(false);
-        web.setWebViewClient(new WebViewClient());
+        s.setUserAgentString(s.getUserAgentString() + " EldmorApp");
+        // Links da internet (site, login) abrem no navegador do celular, nunca dentro do jogo.
+        web.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView v, WebResourceRequest r) {
+                return abrirFora(r.getUrl());
+            }
+            @SuppressWarnings("deprecation")
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView v, String url) {
+                return abrirFora(Uri.parse(url));
+            }
+        });
         web.setWebChromeClient(new WebChromeClient());
         web.setOverScrollMode(View.OVER_SCROLL_NEVER);
         setContentView(web);
         hideBars();
-        if (savedInstanceState != null) web.restoreState(savedInstanceState);
-        else web.loadUrl("file:///android_asset/game/index.html");
+        web.loadUrl("file:///android_asset/game/index.html");
+    }
+
+    private boolean abrirFora(Uri u) {
+        String sc = u.getScheme();
+        if (sc == null || sc.equals("file")) return false;
+        try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception e) { }
+        return true;
     }
 
     private void hideBars() {
