@@ -1,0 +1,8 @@
+{
+ "name": "reinos-de-eldmor",
+ "productName": "Reinos de Eldmor",
+ "version": "1.0.0",
+ "description": "RPG de a\u00e7\u00e3o 2D",
+ "main": "main.js",
+ "author": "Wendrew"
+}

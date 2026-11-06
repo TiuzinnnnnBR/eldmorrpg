@@ -1,0 +1,12 @@
+REINOS DE ELDMOR - versão para PC (Windows 10 e 11, 64 bits)
+
+Como jogar:
+1. Extraia esta pasta inteira (botão direito no .zip > Extrair tudo).
+2. Abra "Reinos de Eldmor.exe".
+3. F11 liga e desliga a tela cheia.
+
+Se o Windows mostrar "O Windows protegeu o computador", clique em
+"Mais informações" e depois em "Executar assim mesmo". Isso aparece
+porque o programa ainda não tem assinatura digital (veja o guia).
+
+O progresso fica salvo no próprio computador.

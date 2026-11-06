@@ -28,7 +28,7 @@ jobs:
           SRC=$(dirname "$(find . -name manifest.webmanifest -not -path './android/*' -not -path './.git/*' | head -1)")
           echo "Jogo encontrado em: $SRC"
           rm -rf /tmp/jogo && mkdir -p /tmp/jogo
-          (cd "$SRC" && tar --exclude=./android --exclude=./.git --exclude=./.github -cf - .) | (cd /tmp/jogo && tar -xf -)
+          (cd "$SRC" && tar --exclude=./android --exclude=./.git --exclude=./.github --exclude=./windows -cf - .) | (cd /tmp/jogo && tar -xf -)
           rm -rf android/app/src/main/assets/game
           mkdir -p android/app/src/main/assets/game
           cp -r /tmp/jogo/. android/app/src/main/assets/game/
@@ -54,3 +54,35 @@ jobs:
           name: Reinos de Eldmor (Android) ${{ github.run_number }}
           body: Baixe o arquivo ReinosDeEldmor.apk abaixo e abra no celular Android para instalar.
           files: ReinosDeEldmor.apk
+
+  windows:
+    needs: apk
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Montar a versão para Windows
+        shell: pwsh
+        run: |
+          $v = "33.2.1"
+          Invoke-WebRequest "https://github.com/electron/electron/releases/download/v$v/electron-v$v-win32-x64.zip" -OutFile electron.zip
+          $d = "out\Reinos de Eldmor"
+          New-Item -ItemType Directory -Force $d | Out-Null
+          Expand-Archive electron.zip -DestinationPath $d
+          Rename-Item "$d\electron.exe" "Reinos de Eldmor.exe"
+          Remove-Item "$d\resources\default_app.asar" -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force "$d\resources\app\game" | Out-Null
+          Copy-Item windows\main.js, windows\package.json "$d\resources\app\"
+          Copy-Item windows\LEIA-ME.txt "$d\"
+          Get-ChildItem -Force | Where-Object { $_.Name -notin @('android','windows','out','.git','.github','electron.zip','rcedit.exe') } | Copy-Item -Destination "$d\resources\app\game" -Recurse -Force
+          Remove-Item "$d\resources\app\game\site.html","$d\resources\app\game\loja.html" -ErrorAction SilentlyContinue
+          Remove-Item "$d\resources\app\game\img" -Recurse -ErrorAction SilentlyContinue
+          Invoke-WebRequest "https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe" -OutFile rcedit.exe
+          .\rcedit.exe "$d\Reinos de Eldmor.exe" --set-icon windows\icon.ico --set-version-string ProductName "Reinos de Eldmor" --set-version-string FileDescription "Reinos de Eldmor"
+          Compress-Archive -Path $d -DestinationPath ReinosDeEldmor-Windows.zip
+
+      - name: Publicar para download
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-${{ github.run_number }}
+          files: ReinosDeEldmor-Windows.zip
