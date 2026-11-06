@@ -28,7 +28,7 @@ jobs:
           SRC=$(dirname "$(find . -name manifest.webmanifest -not -path './android/*' -not -path './.git/*' | head -1)")
           echo "Jogo encontrado em: $SRC"
           rm -rf /tmp/jogo && mkdir -p /tmp/jogo
-          (cd "$SRC" && tar --exclude=./android --exclude=./.git --exclude=./.github --exclude=./windows -cf - .) | (cd /tmp/jogo && tar -xf -)
+          (cd "$SRC" && tar --exclude=./android --exclude=./.git --exclude=./.github --exclude=./windows --exclude=./vid -cf - .) | (cd /tmp/jogo && tar -xf -)
           rm -rf android/app/src/main/assets/game
           mkdir -p android/app/src/main/assets/game
           cp -r /tmp/jogo/. android/app/src/main/assets/game/
