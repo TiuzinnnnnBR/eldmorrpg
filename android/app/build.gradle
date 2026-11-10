@@ -15,11 +15,12 @@ android {
         versionName '1.' + runNo
     }
     buildFeatures { buildConfig true }
-    signingConfigs {
-        upload {
-            def ks = System.getenv('PLAY_KS_FILE')
-            if (ks && new File(ks).exists()) {
-                storeFile file(ks)
+    def ksPath = System.getenv('PLAY_KS_FILE')
+    def hasKs = ksPath && new File(ksPath).exists()
+    if (hasKs) {
+        signingConfigs {
+            upload {
+                storeFile file(ksPath)
                 storePassword System.getenv('PLAY_KS_PASS')
                 keyAlias 'upload'
                 keyPassword System.getenv('PLAY_KS_PASS')
@@ -36,8 +37,7 @@ android {
         play {
             dimension 'loja'
             applicationId 'com.wendrew.reinosdeeldmor'
-            def ks = System.getenv('PLAY_KS_FILE')
-            signingConfig (ks && new File(ks).exists()) ? signingConfigs.upload : signingConfigs.debug
+            signingConfig hasKs ? signingConfigs.upload : signingConfigs.debug
         }
     }
     buildTypes {
