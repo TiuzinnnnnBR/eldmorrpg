@@ -1,20 +1,48 @@
 plugins {
     id 'com.android.application'
 }
+// Duas versões do mesmo jogo, no mesmo servidor:
+//  site -> APK para baixar pelo site (loja com Mercado Pago), igual sempre foi
+//  play -> versão da Google Play Store (loja com o pagamento da Google Play)
+def runNo = (System.getenv('GITHUB_RUN_NUMBER') ?: '1') as int
 android {
     namespace 'com.wendrew.eldmor'
-    compileSdk 34
+    compileSdk 36
     defaultConfig {
-        applicationId 'com.wendrew.eldmor'
         minSdk 24
-        targetSdk 34
-        versionCode 1
-        versionName '1.0'
+        targetSdk 36
+        versionCode 100 + runNo
+        versionName '1.' + runNo
+    }
+    buildFeatures { buildConfig true }
+    signingConfigs {
+        upload {
+            def ks = System.getenv('PLAY_KS_FILE')
+            if (ks && new File(ks).exists()) {
+                storeFile file(ks)
+                storePassword System.getenv('PLAY_KS_PASS')
+                keyAlias 'upload'
+                keyPassword System.getenv('PLAY_KS_PASS')
+            }
+        }
+    }
+    flavorDimensions 'loja'
+    productFlavors {
+        site {
+            dimension 'loja'
+            applicationId 'com.wendrew.eldmor'
+            signingConfig signingConfigs.debug
+        }
+        play {
+            dimension 'loja'
+            applicationId 'com.wendrew.reinosdeeldmor'
+            def ks = System.getenv('PLAY_KS_FILE')
+            signingConfig (ks && new File(ks).exists()) ? signingConfigs.upload : signingConfigs.debug
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
-            signingConfig signingConfigs.debug
         }
     }
     lint {
@@ -25,4 +53,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+}
+dependencies {
+    playImplementation 'com.android.billingclient:billing:8.0.0'
 }

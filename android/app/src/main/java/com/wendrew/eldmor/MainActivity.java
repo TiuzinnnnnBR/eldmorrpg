@@ -40,7 +40,7 @@ public class MainActivity extends Activity {
         s.setLoadWithOverviewMode(true);
         s.setUseWideViewPort(true);
         s.setSupportZoom(false);
-        s.setUserAgentString(s.getUserAgentString() + " EldmorApp");
+        s.setUserAgentString(s.getUserAgentString() + " EldmorApp" + (BuildConfig.FLAVOR.equals("play") ? " EldmorPlay" : ""));
         // Links da internet (site, login) abrem no navegador do celular, nunca dentro do jogo.
         web.setWebViewClient(new WebViewClient() {
             @Override
@@ -57,6 +57,7 @@ public class MainActivity extends Activity {
         web.setOverScrollMode(View.OVER_SCROLL_NEVER);
         setContentView(web);
         hideBars();
+        Billing.attach(this, web);
         web.loadUrl("file:///android_asset/game/index.html");
     }
 
@@ -97,6 +98,7 @@ public class MainActivity extends Activity {
         super.onResume();
         web.onResume();
         hideBars();
+        Billing.resume();
     }
 
     @Override
