@@ -14,13 +14,23 @@ jobs:
           S: ${{ secrets.FTP_SERVER }}
         run: |
           if [ -z "$S" ]; then echo "Segredos FTP ainda não cadastrados; pulando."; echo "ok=0" >> $GITHUB_OUTPUT; else echo "ok=1" >> $GITHUB_OUTPUT; fi
+      - name: Limpar endereco do servidor
+        if: steps.chk.outputs.ok == '1'
+        env:
+          S: ${{ secrets.FTP_SERVER }}
+        run: |
+          H=$(printf '%s' "$S" | tr -d ' \t\r\n' | sed -E 's#^[a-zA-Z]+://##; s#/.*$##; s#:[0-9]+$##')
+          echo "::add-mask::$H"
+          echo "Tamanho do endereco: ${#H} caracteres"
+          if [[ "$H" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo "Formato: IP valido"; elif [[ "$H" == *.* ]]; then echo "Formato: nome de dominio"; else echo "::error::FTP_SERVER nao parece um IP nem um dominio. Confira se colou o 'IP do FTP (host)'."; exit 1; fi
+          echo "FTPH=$H" >> $GITHUB_ENV
       - uses: actions/checkout@v4
         if: steps.chk.outputs.ok == '1'
       - name: Enviar por FTP
         if: steps.chk.outputs.ok == '1'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.FTP_SERVER }}
+          server: ${{ env.FTPH }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./hostinger-site/
