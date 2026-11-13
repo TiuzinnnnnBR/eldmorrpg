@@ -22,6 +22,9 @@ jobs:
         run: |
           sudo apt-get install -y -qq lftp >/dev/null
           H=$(printf '%s' "$H" | tr -d ' \t\r\n')
-          lftp -u "$U,$P" -e "set ssl:verify-certificate no; pwd; ls; bye" "$H" 2>&1 | head -40
-          echo "== index.html remoto:"; lftp -u "$U,$P" -e "set ssl:verify-certificate no; cat index.html; bye" "$H" 2>/dev/null | grep -o 'Relíquias de Eldmor\|eld2.css\|hero2' | sort | uniq -c
-          echo "== uma pasta acima:"; lftp -u "$U,$P" -e "set ssl:verify-certificate no; ls ..; bye" "$H" 2>&1 | head -20
+          L(){ lftp -u "$U,$P" -e "set ssl:verify-certificate no; $1; bye" "$H" 2>&1; }
+          echo "== pwd"; L pwd | sed "s/$U/USUARIO/g"
+          echo "== ls .."; L "cls -1 .." | sed "s/$U/USUARIO/g"
+          echo "== ls ../.."; L "cls -1 ../.." | sed "s/$U/USUARIO/g" | head -30
+          echo "== ls ../../.."; L "cls -1 ../../.." | sed "s/$U/USUARIO/g" | head -30
+          for d in .. ../.. ; do for x in $(L "cls -1 $d" | grep -v '^\.' ); do :; done; done
