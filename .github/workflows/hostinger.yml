@@ -1,0 +1,27 @@
+name: Publicar site na Hostinger
+on:
+  push:
+    branches: [main]
+    paths: ['hostinger-site/**', '.github/workflows/hostinger.yml']
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Conferir segredos
+        id: chk
+        env:
+          S: ${{ secrets.FTP_SERVER }}
+        run: |
+          if [ -z "$S" ]; then echo "Segredos FTP ainda não cadastrados; pulando."; echo "ok=0" >> $GITHUB_OUTPUT; else echo "ok=1" >> $GITHUB_OUTPUT; fi
+      - uses: actions/checkout@v4
+        if: steps.chk.outputs.ok == '1'
+      - name: Enviar por FTP
+        if: steps.chk.outputs.ok == '1'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./hostinger-site/
+          server-dir: ./public_html/
