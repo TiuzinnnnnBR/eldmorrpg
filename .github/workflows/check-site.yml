@@ -1,0 +1,13 @@
+name: Conferir site
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/check-site.yml']
+  workflow_dispatch:
+jobs:
+  c:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          U=https://mediumblue-llama-752104.hostingersite.com
+          for p in / /loja.html /jogo.html /passe.html /eventos.html /guildas.html /eld2.css /img/c/skin_17.png; do printf "%s " "$p"; curl -s -o /tmp/b -w "%{http_code} " "$U$p?nc=$RANDOM"; grep -c 'Relíquias de Eldmor\|data-page=' /tmp/b; done
