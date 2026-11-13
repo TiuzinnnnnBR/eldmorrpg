@@ -30,13 +30,16 @@ jobs:
           U: ${{ secrets.FTP_USERNAME }}
           P: ${{ secrets.FTP_PASSWORD }}
           FULL: ${{ contains(github.event.head_commit.message, '[envio-completo]') && '1' || '0' }}
+          DELX: ${{ contains(github.event.head_commit.message, '[apagar-pasta-extra]') && '1' || '0' }}
         run: |
           sudo apt-get install -y -qq lftp >/dev/null
           L(){ lftp -u "$U,$P" -e "set ssl:verify-certificate no; set ftp:ssl-allow yes; cls -1a $1; bye" "$FTPH" 2>/dev/null | sed 's#/$##' | xargs -n1 basename 2>/dev/null | sort; }
           echo "== Raiz do FTP =="; R=$(L .); echo "$R"
           if echo "$R" | grep -qxE 'loja.html|wds|index.html|site.html'; then
             echo "A raiz do FTP já é a pasta do site."; D=./
-            if echo "$R" | grep -qx public_html; then echo "(existe uma pasta public_html extra aqui dentro, criada pelos envios antigos; pode ser apagada)"; fi
+            if echo "$R" | grep -qx public_html; then
+              if [ "$DELX" = "1" ]; then lftp -u "$U,$P" -e "set ssl:verify-certificate no; rm -r -f public_html; bye" "$FTPH" && echo "Pasta public_html extra apagada."; else echo "(existe uma pasta public_html extra aqui dentro, criada pelos envios antigos; pode ser apagada)"; fi
+            fi
           elif echo "$R" | grep -qx public_html; then
             echo "== Dentro de public_html =="; L public_html | head -40; D=./public_html/
           else D=./; fi
