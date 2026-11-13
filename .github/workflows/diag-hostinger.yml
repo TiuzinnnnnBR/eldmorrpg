@@ -25,6 +25,6 @@ jobs:
           L(){ lftp -u "$U,$P" -e "set ssl:verify-certificate no; $1; bye" "$H" 2>&1; }
           echo "== pwd"; L pwd | sed "s/$U/USUARIO/g"
           echo "== ls .."; L "cls -1 .." | sed "s/$U/USUARIO/g"
-          echo "== ls ../.."; L "cls -1 ../.." | sed "s/$U/USUARIO/g" | head -30
-          echo "== ls ../../.."; L "cls -1 ../../.." | sed "s/$U/USUARIO/g" | head -30
+          echo "== domains"; L "cls -1 ../domains" | head -30
+          for d in $(L "cls -1 ../domains" | grep '/$'); do echo "== $d"; L "cls -1 ${d}" | head; L "cls -1 ${d}public_html" | head -25; done
           for d in .. ../.. ; do for x in $(L "cls -1 $d" | grep -v '^\.' ); do :; done; done
