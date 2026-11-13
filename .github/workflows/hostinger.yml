@@ -24,6 +24,22 @@ jobs:
           echo "Tamanho do endereco: ${#H} caracteres"
           if [[ "$H" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo "Formato: IP valido"; elif [[ "$H" == *.* ]]; then echo "Formato: nome de dominio"; else echo "::error::FTP_SERVER nao parece um IP nem um dominio. Confira se colou o 'IP do FTP (host)'."; exit 1; fi
           echo "FTPH=$H" >> $GITHUB_ENV
+      - name: Descobrir a pasta do site
+        if: steps.chk.outputs.ok == '1'
+        env:
+          U: ${{ secrets.FTP_USERNAME }}
+          P: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          sudo apt-get install -y -qq lftp >/dev/null
+          L(){ lftp -u "$U,$P" -e "set ssl:verify-certificate no; set ftp:ssl-allow yes; cls -1a $1; bye" "$FTPH" 2>/dev/null | sed 's#/$##' | xargs -n1 basename 2>/dev/null | sort; }
+          echo "== Raiz do FTP =="; R=$(L .); echo "$R"
+          if echo "$R" | grep -qxE 'loja.html|wds|index.html|site.html'; then
+            echo "A raiz do FTP já é a pasta do site."; D=./
+            if echo "$R" | grep -qx public_html; then echo "(existe uma pasta public_html extra aqui dentro, criada pelos envios antigos; pode ser apagada)"; fi
+          elif echo "$R" | grep -qx public_html; then
+            echo "== Dentro de public_html =="; L public_html | head -40; D=./public_html/
+          else D=./; fi
+          echo "Pasta escolhida: $D"; echo "FTPDIR=$D" >> $GITHUB_ENV
       - uses: actions/checkout@v4
         if: steps.chk.outputs.ok == '1'
       - name: Enviar por FTP
@@ -34,4 +50,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./hostinger-site/
-          server-dir: ./public_html/
+          server-dir: ${{ env.FTPDIR }}
