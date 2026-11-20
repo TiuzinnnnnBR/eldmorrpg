@@ -1,5 +1,11 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="WDS Game Dev: estúdio independente brasileiro, criador do RPG online em pixel art Reinos de Eldmor.">
+<link rel="icon" href="a/logo.png">
 <title>WDS Game Dev</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Nunito:wght@400;600;800&family=Silkscreen&display=swap">
@@ -139,6 +145,8 @@ footer{padding-block:26px;text-align:center;color:var(--muted);font-size:13px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
+</head>
+<body>
 
 <nav class="nav"><div class="wrap">
   <a class="brand" href="#topo"><img src="a/wds.png" alt="">WDS Game Dev</a>
@@ -170,7 +178,7 @@ footer{padding-block:26px;text-align:center;color:var(--muted);font-size:13px}
       <dt>Classe</dt><dd>Game dev solo</dd>
       <dt>Base</dt><dd>Brasil 🇧🇷</dd>
       <dt>Missão</dt><dd>Fazer jogos que juntam amigos</dd>
-      <dt>Jogo ativo</dt><dd>Reinos de Eldmor · versão 63</dd>
+      <dt>Jogo ativo</dt><dd>Reinos de Eldmor · versão 81</dd>
       <dt>Plataformas</dt><dd>Navegador, Android e Windows</dd>
       <dt>Inspirações</dt><dd>Rucoy Online, Minecraft Dungeons, Pokémon</dd>
     </dl>
@@ -236,7 +244,8 @@ footer{padding-block:26px;text-align:center;color:var(--muted);font-size:13px}
     <div class="ch paulo"><span class="lbl">Capítulo 3</span><h3>O Arqueiro Eterno</h3><p>Uma homenagem ao meu amigo Paulo, que ajudou a dar vida ao jogo. O memorial dentro de Eldmor guarda a lembrança dele para todos os jogadores.</p></div>
     <div class="ch"><span class="lbl">Capítulo 4</span><h3>Eldmor fica online</h3><p>Servidor próprio, contas, loja, guildas, ranking, site oficial e versões para Android e Windows.</p></div>
     <div class="ch"><span class="lbl">Capítulo 5</span><h3>Todos juntos, ao vivo</h3><p>Monstros sincronizados entre todos os jogadores, chat, amizades, grupos com missões em conjunto, PvP com caçada, montarias e o primeiro Passe de Temporada.</p></div>
-    <div class="ch now"><span class="lbl">Próximo capítulo</span><h3>Rumo à Play Store</h3><p>A versão para a Google Play Store já está sendo preparada, jogando no mesmo servidor de todo mundo.</p></div>
+    <div class="ch"><span class="lbl">Capítulo 6</span><h3>Relíquias de Eldmor</h3><p>Coleção exclusiva de asas, capas, coroas, mascotes que crescem com o herói e montarias raras, ganhas só com códigos de eventos e torneios. Site novo com loja completa, passe e guildas, e todas as montarias redesenhadas com o herói montado de verdade.</p></div>
+    <div class="ch now"><span class="lbl">Próximo capítulo</span><h3>Rumo à Play Store</h3><p>Reinos de Eldmor ainda não está na Google Play. A versão para a loja está nos planos, jogando no mesmo servidor de todo mundo. Por enquanto, dá para jogar no navegador ou baixar para Android e Windows pelo site oficial.</p></div>
   </div>
 </div></section>
 
@@ -272,3 +281,6 @@ inv.addEventListener('click',e=>{const b=e.target.closest('.slot');if(!b)return;
 const close=()=>{lb.hidden=true};document.getElementById('lbx').onclick=close;lb.addEventListener('click',e=>{if(e.target===lb)close()});addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 document.getElementById('copy').onclick=async function(){const t=document.getElementById('mail').textContent;try{await navigator.clipboard.writeText(t);this.textContent='Copiado!'}catch(_){const r=document.createRange();r.selectNodeContents(document.getElementById('mail'));const s=getSelection();s.removeAllRanges();s.addRange(r);this.textContent='Selecionado'}setTimeout(()=>this.textContent='Copiar',2000)};
 </script>
+
+</body>
+</html>
