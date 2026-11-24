@@ -10,6 +10,7 @@ jobs:
     steps:
       - run: |
           set +e
+          for D in https://reinosdeeldmor.com.br https://www.reinosdeeldmor.com.br; do printf '%s ' "$D"; curl -sL -o /tmp/h -w '%{http_code} %{url_effective} ' "$D/?nc=$RANDOM"; printf 'ca-pub: '; grep -o 'ca-pub-7415729487288105' /tmp/h | wc -l; grep -o '<title>[^<]*' /tmp/h | head -1; done
           U=https://mediumblue-llama-752104.hostingersite.com
           for p in / /loja.html /jogo.html /passe.html /eventos.html /guildas.html /eld2.css /img/c/skin_17.png; do printf "%s " "$p"; curl -s -o /tmp/b -w "%{http_code} " "$U$p?nc=$RANDOM"; grep -c 'Relíquias de Eldmor\|data-page=' /tmp/b || true; done
           printf 'wds '; curl -s -o /tmp/w -w '%{http_code} ' "$U/wds/?nc=$RANDOM"; grep -c 'charset="utf-8"\|versão 81' /tmp/w; grep -o 'Desenvolvedor: WDS Game Dev' /tmp/b | head -1; curl -s "$U/?nc=$RANDOM" | grep -o 'Desenvolvedor: WDS Game Dev' | head -1
