@@ -130,3 +130,4 @@ header.top .play{background:linear-gradient(180deg,#ffd35a,#e89a1a)!important;co
 .hero2 .cta3 .btj{margin:0 auto;width:min(400px,86%)}
 .hero2 .cta3 .btr{justify-content:center;margin:0 auto}
 .btj img{clip-path:polygon(7% 5%,93% 5%,99% 50%,93% 95%,7% 95%,1% 50%)!important}
+footer p{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 8px}footer p a{white-space:nowrap}
